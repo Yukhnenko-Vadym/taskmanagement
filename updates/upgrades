@@ -1,0 +1,21 @@
+# implement visibility of tasks depending on role of developer
+# every task has it's own developer(s)
+# solid
+# design/structural changes:
+#   - inheritance and using abstract class as father before inhering(basic operations from abstract class and other from interface)
+# 
+# dto responses
+# project statuses(via enum) and automatic updating according to completed task percentage
+# inspect code on presence of double search(f.e. in service and in repo)
+# team lead must have privileges to update user role 
+# passwords shouldn't be saved right into db (implement encryption) 
+
+
+# change id in the address line(to prevent "leak" of data)
+    
+
+
+# enhanced functions:
+# front-end
+# real-time notifications about new task(s)
+# github integration
