@@ -21,13 +21,6 @@ public class ProjectRepo: IProjectRepository
         return entity;
     }
 
-    public async Task<Project> Update(Project entity)
-    {
-        _context.Projects.Update(entity);
-        await _context.SaveChangesAsync();
-        return entity;
-    }
-
     public async Task Delete(Project entity)
     {
         _context.Projects.Remove(entity);
@@ -42,5 +35,20 @@ public class ProjectRepo: IProjectRepository
     public async Task<Project> GetProjectById(Guid searchId)
     {
         return await _context.Projects.FindAsync(searchId);
+    }
+    
+    public async Task<Project?> GetProjectByIdWithDetails(Guid searchId)
+    {
+        return await _context.Projects
+            .Include(p => p.Owner)
+            .Include(p => p.Tasks)
+            .Include(p => p.ProjectUsers)
+            .ThenInclude(pu => pu.User)
+            .FirstOrDefaultAsync(p => p.Id == searchId);
+    }
+    
+    public async Task SaveChanges()
+    {
+        await _context.SaveChangesAsync();
     }
 }

@@ -13,4 +13,5 @@ public class User
     public required Roles Role { get; set; }
     
     public ICollection<ProjectUser> ProjectUsers { get; set; } = new List<ProjectUser>();
+    public ICollection<Project> OwnedProjects { get; set; } = new List<Project>();
 }

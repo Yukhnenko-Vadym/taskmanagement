@@ -9,12 +9,14 @@ namespace TaskManagementApi.Services.Implementations;
 public class ProjectService: IProjectService
 {
     private readonly IProjectRepository _projectRepository;
+    private readonly IUserRepository _userRepository;
     private readonly IMapper _mapper;
 
-    public ProjectService(IProjectRepository projectRepository, IMapper mapper)
+    public ProjectService(IProjectRepository projectRepository, IMapper mapper, IUserRepository userRepository)
     {
         _projectRepository = projectRepository;
         _mapper = mapper;
+        _userRepository = userRepository;
     }
     
     public async Task<List<Project>> GetAll()
@@ -29,7 +31,15 @@ public class ProjectService: IProjectService
     
     public async Task<Project> CreateProject(CreateProjectDto createProjectDto)
     {
-        return await _projectRepository.Add(_mapper.Map<Project>(createProjectDto));
+        var owner = await _userRepository.GetUserById(createProjectDto.OwnerId);
+
+        if (owner is null)
+            throw new KeyNotFoundException($"User with id {createProjectDto.OwnerId} not found");
+
+        var project = _mapper.Map<Project>(createProjectDto);
+        project.StartedAt = DateTime.UtcNow;
+
+        return await _projectRepository.Add(project);
     }
 
     public async Task<Project> UpdateProject(Guid id, UpdateProjectDto updateProjectDto)
@@ -38,8 +48,11 @@ public class ProjectService: IProjectService
         
         if (project == null)
             throw new KeyNotFoundException($"Project {id} was not found.");
+
+        _mapper.Map(updateProjectDto, project);
         
-        return await _projectRepository.Update(_mapper.Map<Project>(updateProjectDto));
+        await _projectRepository.SaveChanges();
+        return project;
     }
     
     public async Task<bool> Delete(Guid id)

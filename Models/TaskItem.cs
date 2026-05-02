@@ -13,5 +13,4 @@ public class TaskItem
     
     public Guid ProjectId { get; set; }
     public Project Project { get; set; } = null!;
-    
 }

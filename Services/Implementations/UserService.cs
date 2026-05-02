@@ -32,14 +32,17 @@ public class UserService: IUserService
         return await _userRepository.Add(_mapper.Map<User>(createTaskItemDto));
     }
 
-    public async Task<User> UpdateUser(Guid id, UpdateUserDto updateTaskItemDto)
+    public async Task<User> UpdateUser(Guid id, UpdateUserDto updateUserDto)
     {
         var user = await _userRepository.GetUserById(id);
         
         if (user == null)
             throw new KeyNotFoundException($"User with id {id} not found");
         
-        return await _userRepository.Update(_mapper.Map<User>(updateTaskItemDto));
+        _mapper.Map(updateUserDto, user);
+        
+        await _userRepository.SaveChanges();
+        return user;
     }
     
     public async Task<bool> Delete(Guid id)

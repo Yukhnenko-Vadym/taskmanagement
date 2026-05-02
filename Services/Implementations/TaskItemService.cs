@@ -42,7 +42,9 @@ public class TaskItemService: ITaskItemService
            throw new ArgumentException($"Task item with {id} wasn't found");
        
        _mapper.Map(updateTaskItemDto, taskItem);
-       return await _taskItemRepository.Update(taskItem);
+       
+       await _taskItemRepository.SaveChanges();
+       return taskItem;
     }
     
     public async Task<bool> Delete(Guid id)

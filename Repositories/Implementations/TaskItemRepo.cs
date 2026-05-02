@@ -18,13 +18,6 @@ public class TaskItemRepo: ITaskItemRepository
         return entity;
     }
 
-    public async Task<TaskItem> Update(TaskItem entity)
-    {
-        _context.TaskItems.Update(entity);
-        await _context.SaveChangesAsync();
-        return entity;
-    }
-
     public async Task Delete(TaskItem entity)
     {
         _context.TaskItems.Remove(entity);
@@ -37,9 +30,21 @@ public class TaskItemRepo: ITaskItemRepository
             .AsNoTracking()
             .ToListAsync();
     }
-
+    
     public async Task<TaskItem?> GetTaskItemById(Guid searchId)
     {
         return await _context.TaskItems.FindAsync(searchId);
+    }
+    
+    public async Task<TaskItem?> GetTaskItemByIdWithProject(Guid searchId)
+    {
+        return await _context.TaskItems
+            .Include(t => t.Project)
+            .FirstOrDefaultAsync(t => t.Id == searchId);
+    }
+
+    public async Task SaveChanges()
+    {
+        await _context.SaveChangesAsync();
     }
 }

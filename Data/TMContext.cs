@@ -22,24 +22,33 @@ public class TMContext: DbContext
         var projects = modelBuilder.Entity<Project>();
         var projectUsers = modelBuilder.Entity<ProjectUser>();
         
+        tasks.HasKey(t => t.Id);
+        projects.HasKey(p => p.Id);
+        users.HasKey(u => u.Id);
+        
         projectUsers.HasKey(pu => new {pu.ProjectId, pu.UserId});
         
         projectUsers
             .HasOne(pu => pu.Project)
             .WithMany(p => p.ProjectUsers)
-            .HasForeignKey(pu => pu.ProjectId);
+            .HasForeignKey(pu => pu.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         projectUsers
             .HasOne(pu => pu.User)
             .WithMany(u => u.ProjectUsers)
-            .HasForeignKey(pu => pu.UserId);
+            .HasForeignKey(pu => pu.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
         
         projects.HasMany(p => p.Tasks)
             .WithOne(t => t.Project)
-            .HasForeignKey(t => t.ProjectId);
-
-        tasks.HasKey(t => t.Id);
-        projects.HasKey(p => p.Id);
-        users.HasKey(u => u.Id);
+            .HasForeignKey(t => t.ProjectId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        projects
+            .HasOne(p => p.Owner)
+            .WithMany()
+            .HasForeignKey(p => p.OwnerId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

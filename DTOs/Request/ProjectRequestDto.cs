@@ -7,6 +7,7 @@ public class ProjectRequestDto
 
 public class CreateProjectDto: ProjectRequestDto
 {
+    public Guid OwnerId { get; set; }
 }
 
 public class UpdateProjectDto : ProjectRequestDto
