@@ -47,8 +47,14 @@ public class TMContext: DbContext
         
         projects
             .HasOne(p => p.Owner)
-            .WithMany()
+            .WithMany(u => u.OwnedProjects)
             .HasForeignKey(p => p.OwnerId)
             .OnDelete(DeleteBehavior.Restrict);
+        
+        tasks
+            .HasOne(t => t.Assignee)
+            .WithMany(u => u.AssignedTasks)
+            .HasForeignKey(t => t.AssigneeId)
+            .OnDelete(DeleteBehavior.SetNull);
     }
 }
