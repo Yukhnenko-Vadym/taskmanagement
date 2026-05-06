@@ -10,11 +10,18 @@ public class UserProfile: Profile
     {
         CreateMap<CreateUserDto, User>()
             .ForMember(dest => dest.Id,
-                opt => opt.MapFrom(src => Guid.NewGuid()));
+                opt => opt.MapFrom(src => Guid.NewGuid()))
+            .ForMember(dest => dest.PasswordHash,
+                opt => opt.Ignore())
+            .ForMember(dest => dest.PasswordSalt,
+                opt => opt.Ignore());
 
         CreateMap<UpdateUserDto, User>()
-            .ForMember(dest => dest.Id, opt => opt.Ignore())
-            .ForMember(dest => dest.FirstName, opt => opt.Ignore())
-            .ForMember(dest => dest.LastName, opt => opt.Ignore());
+            .ForMember(dest => dest.Id, 
+                opt => opt.Ignore())
+            .ForMember(dest => dest.FirstName,
+                opt => opt.Ignore())
+            .ForMember(dest => dest.LastName,
+                opt => opt.Ignore());
     }
 }

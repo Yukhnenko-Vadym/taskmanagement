@@ -11,6 +11,17 @@
 # passwords shouldn't be saved right into db (implement encryption) 
 
 
+# switch to vertical layer architecture
+# revise access of roles to controller methods
+# revise ef connections which create cycles:
+Project → Owner
+Owner → OwnedProjects
+OwnedProjects → Owner
+🔁 infinite recursion
+# add responses for safety reasons
+# null navigation properties
+
+
 # change id in the address line(to prevent "leak" of data)
     
 

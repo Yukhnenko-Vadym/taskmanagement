@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementApi.DTOs.Request;
 using TaskManagementApi.Models;
@@ -8,6 +9,7 @@ namespace TaskManagementApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class ProjectController:ControllerBase
 {
     private readonly IProjectService _projectService;
@@ -18,6 +20,7 @@ public class ProjectController:ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [Authorize(Roles = "TeamLead")]
     public async Task<ActionResult<Project>> GetProjectById(Guid id)
     {
         var project = await _projectService.GetById(id);
@@ -25,6 +28,7 @@ public class ProjectController:ControllerBase
     }
 
     [HttpGet]
+    [Authorize(Roles = "TeamLead")]
     public async Task<ActionResult<List<Project>>> GetAllProjects()
     {
         var projects = await _projectService.GetAll();
@@ -33,6 +37,7 @@ public class ProjectController:ControllerBase
     }
 
     [HttpPost]
+    [Authorize(Roles = "TeamLead")]
     public async Task<ActionResult<Project>> CreateProject(CreateProjectDto createProjectDto)
     {
         var project = await _projectService.CreateProject(createProjectDto);
@@ -41,6 +46,7 @@ public class ProjectController:ControllerBase
     }
 
     [HttpPatch("{id:guid}")]
+    [Authorize(Roles = "TeamLead")]
     public async Task<ActionResult<Project>> UpdateProject(Guid id, UpdateProjectDto updateProjectDto)
     {
         var project = await _projectService.UpdateProject(id, updateProjectDto);
@@ -49,6 +55,7 @@ public class ProjectController:ControllerBase
     }
 
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "TeamLead")]
     public async Task<ActionResult> DeleteProject(Guid id)
     {
         var deleted = await _projectService.Delete(id);

@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementApi.DTOs.Request;
 using TaskManagementApi.Models;
@@ -7,6 +8,7 @@ namespace TaskManagementApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class TaskItemController:ControllerBase
 {
     private readonly ITaskItemService _taskItemService;
@@ -17,6 +19,7 @@ public class TaskItemController:ControllerBase
     }
 
     [HttpGet("{id:guid}")]
+    [Authorize]
     public async Task<ActionResult<TaskItem>> GetTaskItemById(Guid id)
     {
         var taskItem = await _taskItemService.GetById(id);
@@ -25,6 +28,7 @@ public class TaskItemController:ControllerBase
     }
     
     [HttpGet]
+    [Authorize]
     public async Task<ActionResult<List<TaskItem>>> GetAllTaskItems()
     {
         var taskItems = await _taskItemService.GetAll();
@@ -33,6 +37,7 @@ public class TaskItemController:ControllerBase
     }
     
     [HttpPost]
+    [Authorize(Roles = "TeamLead")]
     public async Task<ActionResult<TaskItem>> CreateTaskItem(CreateTaskItemDto createTaskItemDto)
     {
         var taskItem = await _taskItemService.CreateTaskItem(createTaskItemDto);
@@ -41,6 +46,7 @@ public class TaskItemController:ControllerBase
     }
     
     [HttpPatch("{id:guid}")]
+    [Authorize]
     public async Task<ActionResult<TaskItem>> UpdateTaskItem(Guid id, UpdateTaskItemDto updateTaskItemDto)
     {
         var taskItem = await _taskItemService.UpdateTaskItem(id, updateTaskItemDto);
@@ -49,6 +55,7 @@ public class TaskItemController:ControllerBase
     }
     
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "TeamLead")]
     public async Task<ActionResult> Delete(Guid id)
     {
         var deleted = await _taskItemService.Delete(id);

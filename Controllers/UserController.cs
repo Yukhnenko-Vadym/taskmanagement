@@ -1,23 +1,27 @@
+using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using TaskManagementApi.Data;
 using TaskManagementApi.DTOs.Request;
 using TaskManagementApi.Models;
-using TaskManagementApi.Repositories.Interfaces;
 using TaskManagementApi.Services.Interfaces;
 
 namespace TaskManagementApi.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize]
 public class UserController: ControllerBase
 {
     private readonly IUserService _userService;
 
-    public UserController(IUserService userService)
+    public UserController(IUserService userService, TMContext context)
     {
         _userService =  userService;
     }
     
     [HttpGet("{id:guid}")]
+    [Authorize(Roles = "TeamLead")]
     public async Task<ActionResult<User>> GetUserById(Guid id)
     {
         var user = await _userService.GetById(id);
@@ -26,21 +30,39 @@ public class UserController: ControllerBase
     }
     
     [HttpGet]
+    [Authorize(Roles = "TeamLead")]
     public async Task<ActionResult<List<User>>> GetAllUsers()
     {
         var users = await _userService.GetAll();
         return Ok(users);
     }
     
+    [HttpPost("login")]
+    [AllowAnonymous]
+    public async Task<ActionResult<object>> Login([FromBody] LoginUserDto loginUserDto,
+        [FromServices] ITokenService tokenService)
+    {
+        var user = await _userService.Login(loginUserDto);
+        
+        if (user is null)
+            return Unauthorized("Invalid email or password");
+        
+        var token = tokenService.GenerateToken(user);
+        
+        return Ok(new { token });
+    }
+    
     [HttpPost]
-    public async Task<ActionResult<User>> CreateUser(CreateUserDto createUserDto)
+    [AllowAnonymous]
+    public async Task<ActionResult<User>> RegisterAsync(CreateUserDto createUserDto)
     {
         var user = await _userService.CreateUser(createUserDto);
         
         return Ok(user);
     }
-    
+
     [HttpPatch("{id:guid}")]
+    [Authorize]
     public async Task<ActionResult<User>> UpdateUser(Guid id, UpdateUserDto updateUserDto)
     {
         var user = await _userService.UpdateUser(id, updateUserDto);
@@ -49,6 +71,7 @@ public class UserController: ControllerBase
     }
     
     [HttpDelete("{id:guid}")]
+    [Authorize(Roles = "TeamLead")]
     public async Task<ActionResult> DeleteUser(Guid id)
     {
         var deleted = await _userService.Delete(id);

@@ -38,7 +38,12 @@ public class UserRepo: IUserRepository
     {
         return await _context.Users.FindAsync(searchId);
     }
-    
+
+    public async Task<User?> GetByEmail(string email)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+    }
+
     public async Task<User?> GetUserByIdWithProjects(Guid searchId)
     {
         return await _context.Users
