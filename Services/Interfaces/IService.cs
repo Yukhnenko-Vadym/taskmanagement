@@ -1,8 +1,9 @@
 namespace TaskManagementApi.Services.Interfaces;
 
-public interface IService<T> where T: class
+public interface IService<TResponse> 
+    where TResponse: class
 {
-    public Task<List<T>> GetAll();
-    public Task<T> GetById(Guid id);
+    public Task<List<TResponse>> GetAll();
+    public Task<TResponse> GetById(Guid id);
     public Task<bool> Delete(Guid id);
 }

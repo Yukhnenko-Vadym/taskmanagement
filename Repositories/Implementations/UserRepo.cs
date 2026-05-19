@@ -36,25 +36,31 @@ public class UserRepo: IUserRepository
 
     public async Task<User?> GetUserById(Guid searchId)
     {
-        return await _context.Users.FindAsync(searchId);
+        return await _context.Users
+            .Include(u => u.OwnedProjects)
+            .Include(u => u.AssignedTasks)
+            .Include(u => u.ProjectUsers)
+                .ThenInclude(pu => pu.Project)
+            .FirstOrDefaultAsync(u => u.Id == searchId);
     }
 
     public async Task<User?> GetByEmail(string email)
     {
-        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
-    }
-
-    public async Task<User?> GetUserByIdWithProjects(Guid searchId)
-    {
         return await _context.Users
             .Include(u => u.OwnedProjects)
+            .Include(u => u.AssignedTasks)
             .Include(u => u.ProjectUsers)
-            .ThenInclude(pu => pu.Project)
-            .FirstOrDefaultAsync(u => u.Id == searchId);
+                .ThenInclude(pu => pu.Project)
+            .FirstOrDefaultAsync(u => u.Email == email);
     }
-
+    
     public async Task SaveChanges()
     {
         await _context.SaveChangesAsync();
+    }
+
+    public async Task<bool> IsExist(Guid userId)
+    {
+        return await  _context.Users.AnyAsync(u => u.Id == userId);
     }
 }

@@ -33,16 +33,12 @@ public class TaskItemRepo: ITaskItemRepository
     
     public async Task<TaskItem?> GetTaskItemById(Guid searchId)
     {
-        return await _context.TaskItems.FindAsync(searchId);
-    }
-    
-    public async Task<TaskItem?> GetTaskItemByIdWithProject(Guid searchId)
-    {
         return await _context.TaskItems
             .Include(t => t.Project)
-            .FirstOrDefaultAsync(t => t.Id == searchId);
+            .Include(u => u.Assignee)
+            .FirstOrDefaultAsync(t=> t.Id == searchId);
     }
-
+    
     public async Task SaveChanges()
     {
         await _context.SaveChangesAsync();

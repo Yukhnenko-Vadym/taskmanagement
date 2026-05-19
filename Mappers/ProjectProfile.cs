@@ -1,5 +1,6 @@
 using AutoMapper;
 using TaskManagementApi.DTOs.Request;
+using TaskManagementApi.DTOs.Response;
 using TaskManagementApi.Models;
 
 namespace TaskManagementApi.Mappers;
@@ -20,5 +21,7 @@ public class ProjectProfile: Profile
             .ForMember(dest => dest.Owner, opt => opt.Ignore())
             .ForMember(dest => dest.ProjectUsers, opt => opt.Ignore())
             .ForMember(dest => dest.Tasks, opt => opt.Ignore());
+        
+        CreateMap<Project, ProjectResponseDto>();
     }
 }

@@ -1,5 +1,6 @@
 using AutoMapper;
 using TaskManagementApi.DTOs.Request;
+using TaskManagementApi.DTOs.Response;
 using TaskManagementApi.Models;
 
 namespace TaskManagementApi.Mappers;
@@ -23,5 +24,7 @@ public class UserProfile: Profile
                 opt => opt.Ignore())
             .ForMember(dest => dest.LastName,
                 opt => opt.Ignore());
+
+        CreateMap<User, UserResponseDto>();
     }
 }

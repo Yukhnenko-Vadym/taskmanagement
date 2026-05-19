@@ -1,5 +1,6 @@
 using AutoMapper;
 using TaskManagementApi.DTOs.Request;
+using TaskManagementApi.DTOs.Response;
 using TaskManagementApi.Models;
 using TaskManagementApi.Repositories.Interfaces;
 using TaskManagementApi.Services.Interfaces;
@@ -19,17 +20,19 @@ public class ProjectService: IProjectService
         _userRepository = userRepository;
     }
     
-    public async Task<List<Project>> GetAll()
+    public async Task<List<ProjectResponseDto>> GetAll()
     {
-        return await _projectRepository.GetAllProjects();
+        var projects = await _projectRepository.GetAllProjects();
+        return _mapper.Map<List<ProjectResponseDto>>(projects);
     }
 
-    public async Task<Project> GetById(Guid id)
+    public async Task<ProjectResponseDto> GetById(Guid id)
     {
-        return await _projectRepository.GetProjectById(id);
+        var project = await _projectRepository.GetProjectById(id);
+        return _mapper.Map<ProjectResponseDto>(project);
     }
     
-    public async Task<Project> CreateProject(CreateProjectDto createProjectDto)
+    public async Task<ProjectResponseDto> CreateProject(CreateProjectDto createProjectDto)
     {
         var owner = await _userRepository.GetUserById(createProjectDto.OwnerId);
 
@@ -39,10 +42,11 @@ public class ProjectService: IProjectService
         var project = _mapper.Map<Project>(createProjectDto);
         project.StartedAt = DateTime.UtcNow;
 
-        return await _projectRepository.Add(project);
+        await _projectRepository.Add(project);
+        return _mapper.Map<ProjectResponseDto>(project);
     }
 
-    public async Task<Project> UpdateProject(Guid id, UpdateProjectDto updateProjectDto)
+    public async Task<ProjectResponseDto> UpdateProject(Guid id, UpdateProjectDto updateProjectDto)
     {
         var project = await _projectRepository.GetProjectById(id);
         
@@ -52,7 +56,7 @@ public class ProjectService: IProjectService
         _mapper.Map(updateProjectDto, project);
         
         await _projectRepository.SaveChanges();
-        return project;
+        return _mapper.Map<ProjectResponseDto>(project);
     }
     
     public async Task<bool> Delete(Guid id)

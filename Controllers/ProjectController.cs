@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementApi.DTOs.Request;
+using TaskManagementApi.DTOs.Response;
 using TaskManagementApi.Models;
 using TaskManagementApi.Repositories.Interfaces;
 using TaskManagementApi.Services.Interfaces;
@@ -21,7 +22,7 @@ public class ProjectController:ControllerBase
 
     [HttpGet("{id:guid}")]
     [Authorize(Roles = "TeamLead")]
-    public async Task<ActionResult<Project>> GetProjectById(Guid id)
+    public async Task<ActionResult<ProjectResponseDto>> GetProjectById(Guid id)
     {
         var project = await _projectService.GetById(id);
         return Ok(project);
@@ -29,7 +30,7 @@ public class ProjectController:ControllerBase
 
     [HttpGet]
     [Authorize(Roles = "TeamLead")]
-    public async Task<ActionResult<List<Project>>> GetAllProjects()
+    public async Task<ActionResult<List<ProjectResponseDto>>> GetAllProjects()
     {
         var projects = await _projectService.GetAll();
         
@@ -38,7 +39,7 @@ public class ProjectController:ControllerBase
 
     [HttpPost]
     [Authorize(Roles = "TeamLead")]
-    public async Task<ActionResult<Project>> CreateProject(CreateProjectDto createProjectDto)
+    public async Task<ActionResult<ProjectResponseDto>> CreateProject(CreateProjectDto createProjectDto)
     {
         var project = await _projectService.CreateProject(createProjectDto);
         
@@ -47,7 +48,7 @@ public class ProjectController:ControllerBase
 
     [HttpPatch("{id:guid}")]
     [Authorize(Roles = "TeamLead")]
-    public async Task<ActionResult<Project>> UpdateProject(Guid id, UpdateProjectDto updateProjectDto)
+    public async Task<ActionResult<ProjectResponseDto>> UpdateProject(Guid id, UpdateProjectDto updateProjectDto)
     {
         var project = await _projectService.UpdateProject(id, updateProjectDto);
         

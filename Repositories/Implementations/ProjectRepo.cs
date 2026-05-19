@@ -29,22 +29,16 @@ public class ProjectRepo: IProjectRepository
 
     public async Task<List<Project>> GetAllProjects()
     {
-        return await _context.Projects.ToListAsync();
+        return await _context.Projects.AsNoTracking().ToListAsync();
     }
 
-    public async Task<Project> GetProjectById(Guid searchId)
-    {
-        return await _context.Projects.FindAsync(searchId);
-    }
-    
-    public async Task<Project?> GetProjectByIdWithDetails(Guid searchId)
+    public async Task<Project?> GetProjectById(Guid searchId)
     {
         return await _context.Projects
-            .Include(p => p.Owner)
             .Include(p => p.Tasks)
             .Include(p => p.ProjectUsers)
-            .ThenInclude(pu => pu.User)
-            .FirstOrDefaultAsync(p => p.Id == searchId);
+                .ThenInclude(pu => pu.User)
+            .FirstOrDefaultAsync(p => p.Id == searchId);;
     }
     
     public async Task SaveChanges()

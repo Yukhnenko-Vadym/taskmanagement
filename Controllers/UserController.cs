@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using TaskManagementApi.Data;
 using TaskManagementApi.DTOs.Request;
+using TaskManagementApi.DTOs.Response;
 using TaskManagementApi.Models;
 using TaskManagementApi.Services.Interfaces;
 
@@ -22,7 +23,7 @@ public class UserController: ControllerBase
     
     [HttpGet("{id:guid}")]
     [Authorize(Roles = "TeamLead")]
-    public async Task<ActionResult<User>> GetUserById(Guid id)
+    public async Task<ActionResult<UserResponseDto>> GetUserById(Guid id)
     {
         var user = await _userService.GetById(id);
         
@@ -31,7 +32,7 @@ public class UserController: ControllerBase
     
     [HttpGet]
     [Authorize(Roles = "TeamLead")]
-    public async Task<ActionResult<List<User>>> GetAllUsers()
+    public async Task<ActionResult<List<UserResponseDto>>> GetAllUsers()
     {
         var users = await _userService.GetAll();
         return Ok(users);
@@ -54,7 +55,7 @@ public class UserController: ControllerBase
     
     [HttpPost]
     [AllowAnonymous]
-    public async Task<ActionResult<User>> RegisterAsync(CreateUserDto createUserDto)
+    public async Task<ActionResult<UserResponseDto>> RegisterAsync(CreateUserDto createUserDto)
     {
         var user = await _userService.CreateUser(createUserDto);
         
@@ -63,7 +64,7 @@ public class UserController: ControllerBase
 
     [HttpPatch("{id:guid}")]
     [Authorize]
-    public async Task<ActionResult<User>> UpdateUser(Guid id, UpdateUserDto updateUserDto)
+    public async Task<ActionResult<UserResponseDto>> UpdateUser(Guid id, UpdateUserDto updateUserDto)
     {
         var user = await _userService.UpdateUser(id, updateUserDto);
        

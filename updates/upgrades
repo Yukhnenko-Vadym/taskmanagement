@@ -1,32 +1,36 @@
-# implement visibility of tasks depending on role of developer
-# every task has it's own developer(s)
-# solid
-# design/structural changes:
-#   - inheritance and using abstract class as father before inhering(basic operations from abstract class and other from interface)
-# 
-# dto responses
-# project statuses(via enum) and automatic updating according to completed task percentage
+High priority:
+# dto responses (for safety reasons) + 
+# assign task method 
 # inspect code on presence of double search(f.e. in service and in repo)
+# null navigation properties
 # team lead must have privileges to update user role 
-# passwords shouldn't be saved right into db (implement encryption) 
-
-
-# switch to vertical layer architecture
-# revise access of roles to controller methods
 # revise ef connections which create cycles:
 Project → Owner
 Owner → OwnedProjects
 OwnedProjects → Owner
 🔁 infinite recursion
-# add responses for safety reasons
-# null navigation properties
-
-
+# revise access of roles to controller methods
 # change id in the address line(to prevent "leak" of data)
-    
 
+Medium priority:
+# solid
+# switch to vertical layer architecture
+# implement visibility of tasks depending on role of developer
 
-# enhanced functions:
+Low priority:
 # front-end
 # real-time notifications about new task(s)
 # github integration
+
+Completed:
+# every task has it's own developer(s) + (partially)
+# project statuses(via enum) and automatic updating according to completed task percentage
+# passwords shouldn't be saved right into db (implement hash + salt)
+
+
+
+Ideas:
+# design/structural changes:
+#   - inheritance and using abstract class as father before inhering(basic operations from abstract class and other from interface)
+# 
+

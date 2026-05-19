@@ -1,10 +1,11 @@
 using TaskManagementApi.DTOs.Request;
+using TaskManagementApi.DTOs.Response;
 using TaskManagementApi.Models;
 
 namespace TaskManagementApi.Services.Interfaces;
 
-public interface IProjectService: IService<Project>
+public interface IProjectService: IService<ProjectResponseDto>
 {
-    public Task<Project> CreateProject(CreateProjectDto createProjectDto);
-    public Task<Project> UpdateProject(Guid id, UpdateProjectDto updateProjectDto);
+    public Task<ProjectResponseDto> CreateProject(CreateProjectDto createProjectDto);
+    public Task<ProjectResponseDto> UpdateProject(Guid id, UpdateProjectDto updateProjectDto);
 }

@@ -3,6 +3,7 @@ using System.Text;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using TaskManagementApi.DTOs.Request;
+using TaskManagementApi.DTOs.Response;
 using TaskManagementApi.Models;
 using TaskManagementApi.Repositories.Interfaces;
 using TaskManagementApi.Services.Interfaces;
@@ -21,17 +22,19 @@ public class UserService : IUserService
         _mapper = mapper;
     }
 
-    public async Task<List<User>> GetAll()
+    public async Task<List<UserResponseDto>> GetAll()
     {
-        return await _userRepository.GetAllUsers();
+        var users = await _userRepository.GetAllUsers();
+        return _mapper.Map<List<UserResponseDto>>(users);
     }
 
-    public async Task<User> GetById(Guid id)
+    public async Task<UserResponseDto> GetById(Guid id)
     {
-        return await _userRepository.GetUserById(id);
+       var user = await _userRepository.GetUserById(id);
+       return _mapper.Map<UserResponseDto>(user);
     }
 
-    public async Task<User> CreateUser(CreateUserDto createUserDto)
+    public async Task<UserResponseDto> CreateUser(CreateUserDto createUserDto)
     {
         var user = _mapper.Map<User>(createUserDto);
 
@@ -41,10 +44,12 @@ public class UserService : IUserService
         user.PasswordSalt = salt;
         user.PasswordHash = hash;
 
-        return await _userRepository.Add(user);
+        await _userRepository.Add(user);
+        
+        return _mapper.Map<UserResponseDto>(user);
     }
 
-    public async Task<User> UpdateUser(Guid id, UpdateUserDto updateUserDto)
+    public async Task<UserResponseDto> UpdateUser(Guid id, UpdateUserDto updateUserDto)
     {
         var user = await _userRepository.GetUserById(id);
 
@@ -54,7 +59,7 @@ public class UserService : IUserService
         _mapper.Map(updateUserDto, user);
 
         await _userRepository.SaveChanges();
-        return user;
+        return _mapper.Map<UserResponseDto>(user);
     }
 
     public async Task<User?> Login(LoginUserDto loginUserDto)
